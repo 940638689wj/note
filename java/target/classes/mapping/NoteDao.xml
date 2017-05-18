@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lz.haida.dao.NoteDao">
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="allColumns">
+        a.note_Id as noteId,
+        a.user_id as userId,
+        a.note_title as noteTitle,
+        a.note_Content as noteContent,
+        a.Is_collect as isCollect,
+        a.note_Type_ID as noteTypeId,
+        a.Create_Time as createTime,
+        a.Last_Update_Time as lastUpdateTime,
+        a.weather as weather,
+        a.location as location,
+        a.Status_Cd as statusCd
+    </sql>
+
+    <sql id="whereForAll">
+        WHERE 1=1
+        <if test="noteId != null and noteId != ''">
+            AND a.note_Id = #{noteId}
+        </if>
+        <if test="userId != null and userId != ''">
+            AND a.user_id = #{userId}
+        </if>
+        <if test="noteTitle != null and noteTitle != ''">
+            AND a.note_title = #{noteTitle}
+        </if>
+        <if test="noteContent != null and noteContent != ''">
+            AND a.note_Content = #{noteContent}
+        </if>
+        <if test="isCollect != null and isCollect != ''">
+            AND a.Is_collect = #{isCollect}
+        </if>
+        <if test="createTime != null and createTime != ''">
+            AND a.Create_Time = #{createTime}
+        </if>
+        <if test="lastUpdateTime != null and lastUpdateTime != ''">
+            AND a.Last_Update_Time = #{lastUpdateTime}
+        </if>
+        <if test="weather != null and weather != ''">
+            AND a.weather = #{weather}
+        </if>
+        <if test="location != null and location != ''">
+            AND a.location = #{location}
+        </if>
+        <if test="statusCd != null">
+            AND a.Status_Cd = #{statusCd}
+        </if>
+        <if test="noteTypeId != null and noteTypeId != ''">
+            AND a.note_Type_ID = #{noteTypeId}
+        </if>
+    </sql>
+
+    <!-- 新增 -->
+    <insert id="insert" parameterType="com.lz.haida.domain.Note" useGeneratedKeys="true" keyProperty="noteId">
+        INSERT INTO note(
+        user_id,
+        note_title,
+        note_Content,
+        Is_collect,
+        note_Type_ID,
+        Create_Time,
+        Last_Update_Time,
+        weather,
+        location,
+        Status_Cd
+        ) VALUES (
+        #{userId},
+        #{noteTitle},
+        #{noteContent},
+        #{isCollect},
+        #{noteTypeId},
+        #{createTime},
+        #{lastUpdateTime},
+        #{weather},
+        #{location},
+        #{statusCd}
+        )
+    </insert>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="java.lang.Integer">
+        DELETE FROM note
+        WHERE note_Id = #{id}
+    </delete>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="com.lz.haida.domain.Note">
+        UPDATE note SET
+        <if test="userId != null">
+            user_id = #{userId},
+        </if>
+        <if test="noteTitle != null and noteTitle != ''">
+            note_title = #{noteTitle},
+        </if>
+        <if test="noteContent != null">
+            note_Content = #{noteContent},
+        </if>
+        <if test="isCollect != null">
+            Is_collect = #{isCollect},
+        </if>
+        <if test="noteTypeId != null">
+            note_Type_ID = #{noteTypeId},
+        </if>
+        <if test="createTime != null">
+            Create_Time = #{createTime},
+        </if>
+        <if test="weather != null and weather != ''">
+            weather = #{weather},
+        </if>
+        <if test="location != null and location != ''">
+            location = #{location},
+        </if>
+        <if test="statusCd != null">
+            Status_Cd = #{statusCd},
+        </if>
+        Last_Update_Time = #{lastUpdateTime}
+        WHERE
+        note_Id = #{noteId}
+    </update>
+    
+    <!-- 根据主键获取 -->
+    <select id="get" resultType="com.lz.haida.domain.Note" parameterType="java.lang.Integer">
+        SELECT
+        <include refid="allColumns"/>
+        FROM note a
+        WHERE note_Id=#{id}
+    </select>
+
+    <!-- 根据类型ID获取-->
+    <select id="listNote" resultType="com.lz.haida.domain.Note" parameterType="com.lz.haida.domain.Note">
+        SELECT
+        <include refid="allColumns"/>
+        FROM note a
+        <include refid="whereForAll"/>
+    </select>
+
+</mapper>

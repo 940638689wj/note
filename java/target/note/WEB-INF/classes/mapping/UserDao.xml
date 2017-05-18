@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lz.haida.dao.UserDao">
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="allColumns">
+        a.id as id,
+        a.Login_Name as loginName,
+        a.Password as password,
+        a.User_Name as userName,
+        a.Sex_Cd as sexCd,
+        a.Status_Cd as statusCd,
+        a.Create_Time as createTime
+    </sql>
+
+    <!-- 新增 -->
+    <insert id="insert" parameterType="com.lz.haida.domain.User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user(
+        Login_Name,
+        Password,
+        User_Name,
+        Sex_Cd,
+        Status_Cd,
+        Create_Time
+        ) VALUES (
+        #{loginName},
+        #{password},
+        #{userName},
+        #{sexCd},
+        #{statusCd},
+        #{createTime}
+        )
+    </insert>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="java.lang.Integer">
+        DELETE FROM user
+        WHERE id = #{id}
+    </delete>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="com.lz.haida.domain.User">
+        UPDATE user SET
+        Login_Name = #{loginName},
+        Password = #{password},
+        User_Name = #{userName},
+        Sex_Cd = #{sexCd},
+        Status_Cd = #{statusCd},
+        Create_Time = #{createTime}
+        WHERE
+        id = #{id}
+    </update>
+
+    <!-- 根据主键获取 -->
+    <select id="get" resultType="com.lz.haida.domain.User" parameterType="java.lang.Integer">
+        SELECT
+        a.id as id,
+        a.Login_Name as loginName,
+        a.User_Name as userName,
+        a.Sex_Cd as sexCd,
+        a.Status_Cd as statusCd,
+        a.Create_Time as createTime
+        FROM user a
+        WHERE id=#{id}
+    </select>
+
+    <!-- 根据手机号码获取 -->
+    <select id="getByUserName" resultType="com.lz.haida.domain.User" parameterType="java.lang.String">
+        SELECT
+        <include refid="allColumns"/>
+        FROM user a
+        WHERE
+        a.User_Name=#{0}
+    </select>
+
+    <!-- 根据登录名获取 -->
+    <select id="getByLoginName" resultType="com.lz.haida.domain.User" parameterType="java.lang.String">
+        SELECT
+        <include refid="allColumns"/>
+        FROM user a
+        WHERE
+        a.login_Name=#{loginName}
+    </select>
+
+    <!-- 根据用户名和密码获取 -->
+    <select id="getLoginUser" resultType="com.lz.haida.domain.User" parameterType="com.lz.haida.domain.User">
+        SELECT
+        <include refid="allColumns"/>
+        FROM user a
+        WHERE (a.Login_Name=#{loginName} OR a.User_Name=#{loginName})
+    </select>
+
+</mapper>

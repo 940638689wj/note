@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lz.haida.dao.NoteTypeDao">
+
+    <!-- 用于select查询公用抽取的列 -->
+    <sql id="allColumns">
+        a.type_id as typeId,
+        a.user_id as userId,
+        a.Type_Name as typeName,
+        a.Display_ID as displayId,
+        a.Create_Time as createTime,
+        a.Status_Cd as statusCd,
+        a.Type_Desc as typeDesc,
+        a.Last_Update_Time as lastUpdateTime
+    </sql>
+
+    <sql id="whereForAll">
+        WHERE 1=1
+        <if test="typeId != null and typeId != ''">
+            AND a.type_id = #{typeId}
+        </if>
+        <if test="userId != null and userId != ''">
+            AND a.user_id = #{userId}
+        </if>
+        <if test="typeName != null and typeName != ''">
+            AND a.Type_Name = #{typeName}
+        </if>
+        <if test="displayId != null and displayId != ''">
+            AND a.Display_ID = #{displayId}
+        </if>
+        <if test="createTime != null and createTime != ''">
+            AND a.Create_Time = #{createTime}
+        </if>
+        <if test="statusCd != null and statusCd != ''">
+            AND a.Status_Cd = #{statusCd}
+        </if>
+        <if test="typeDesc != null and typeDesc != ''">
+            AND a.Type_Desc = #{typeDesc}
+        </if>
+        <if test="lastUpdateTime != null and lastUpdateTime != ''">
+            AND a.Last_Update_Time = #{lastUpdateTime}
+        </if>
+    </sql>
+
+    <!-- 新增 -->
+    <insert id="insert" parameterType="com.lz.haida.domain.NoteType" useGeneratedKeys="true" keyProperty="typeId">
+        INSERT INTO note_type(
+        user_id,
+        Type_Name,
+        Display_ID,
+        Create_Time,
+        Status_Cd,
+        Type_Desc,
+        Last_Update_Time
+        ) VALUES (
+        #{userId},
+        #{typeName},
+        #{displayId},
+        #{createTime},
+        #{statusCd},
+        #{typeDesc},
+        #{lastUpdateTime}
+        )
+    </insert>
+
+    <!-- 删除 -->
+    <delete id="delete" parameterType="java.lang.Integer">
+        DELETE FROM note_type
+        WHERE type_id = #{id}
+    </delete>
+
+    <!-- 更新 -->
+    <update id="update" parameterType="com.lz.haida.domain.NoteType">
+        UPDATE note_type SET
+        <if test="typeName != null and typeName != ''">
+            Type_Name = #{typeName},
+        </if>
+        <if test="displayId != null and displayId != ''">
+          Display_ID = #{displayId},
+        </if>
+        <if test="statusCd != null">
+          Status_Cd = #{statusCd},
+        </if>
+        <if test="typeDesc != null and typeDesc != ''">
+          Type_Desc = #{typeDesc},
+        </if>
+        Last_Update_Time = #{lastUpdateTime}
+        WHERE
+        type_id = #{typeId}
+    </update>
+    
+    <!-- 根据主键获取 -->
+    <select id="get" resultType="com.lz.haida.domain.NoteType" parameterType="java.lang.Integer">
+        SELECT
+        <include refid="allColumns"/>
+        FROM note_type a
+        WHERE type_id=#{id}
+    </select>
+
+    <!-- 根据类型ID获取-->
+    <select id="listNoteType" resultType="com.lz.haida.domain.NoteType" parameterType="com.lz.haida.domain.NoteType">
+        SELECT
+        <include refid="allColumns"/>
+        FROM note_type a
+        <include refid="whereForAll"/>
+    </select>
+
+    <!--根据用户获取所有类型-->
+    <select id="findNoteTypeList" parameterType="java.lang.Integer" resultType="com.lz.haida.domain.NoteType">
+        SELECT
+        <include refid="allColumns"/>
+        FROM note_type a
+        WHERE a.user_id = #{userId}
+        AND a.status_Cd = 1
+    </select>
+
+</mapper>
